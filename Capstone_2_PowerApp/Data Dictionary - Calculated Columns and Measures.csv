@@ -1,0 +1,578 @@
+DATABASE_NAME,OBJECT_TYPE,TABLE,OBJECT,EXPRESSION,REFERENCED_OBJECT_TYPE,REFERENCED_TABLE,REFERENCED_OBJECT,REFERENCED_EXPRESSION,QUERY
+"f94fc950-a3d3-4120-92f9-e670f45109c8","MEASURE","Attendance Measures","Total Check-Ins","
+     COUNTROWS(Attendance)","TABLE","Attendance","Attendance","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","MEASURE","Attendance Measures","Total On-Site Students","
+    CALCULATE(COUNTROWS(Registration), Registration[StudentType] = ""On-Site""
+    )","COLUMN","Registration","StudentType","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","MEASURE","Attendance Measures","Total On-Site Students","
+    CALCULATE(COUNTROWS(Registration), Registration[StudentType] = ""On-Site""
+    )","TABLE","Registration","Registration","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","MEASURE","Attendance Measures","Total Remote Students","
+    CALCULATE(COUNTROWS(Registration), Registration[StudentType] = ""Remote""
+    )","TABLE","Registration","Registration","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","MEASURE","Attendance Measures","Total Remote Students","
+    CALCULATE(COUNTROWS(Registration), Registration[StudentType] = ""Remote""
+    )","COLUMN","Registration","StudentType","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","MEASURE","Attendance Measures","Total Cohorts","
+    COUNTROWS(Cohorts)","TABLE","Cohorts","Cohorts","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","MEASURE","Attendance Measures","Total Students","
+    COUNTROWS(Registration)","TABLE","Registration","Registration","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","MEASURE","Attendance Measures","Total Daily Hours","
+    SUM(Attendance[Daily Hours])","TABLE","Attendance","Attendance","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","MEASURE","Attendance Measures","Total Daily Hours","
+    SUM(Attendance[Daily Hours])","CALC_COLUMN","Attendance","Daily Hours","
+    VAR LunchOffset = 1
+    VAR DailyHours = DATEDIFF(Attendance[Check-In],Attendance[CheckOut],HOUR)
+RETURN
+    DailyHours - LunchOffset",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","MEASURE","Attendance Measures","Percent Attendance YTD","
+    VAR dailyHours = SUM(Attendance[Daily Hours])
+    VAR cohortHrsYTD = MAX(Attendance[tmp Hours YTD])
+
+RETURN
+
+DIVIDE(dailyHours, cohortHrsYTD,0)","CALC_COLUMN","Attendance","tmp Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], RELATED(Cohorts[StartDate]), TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","MEASURE","Attendance Measures","Percent Attendance YTD","
+    VAR dailyHours = SUM(Attendance[Daily Hours])
+    VAR cohortHrsYTD = MAX(Attendance[tmp Hours YTD])
+
+RETURN
+
+DIVIDE(dailyHours, cohortHrsYTD,0)","TABLE","Attendance","Attendance","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","MEASURE","Attendance Measures","Percent Attendance YTD","
+    VAR dailyHours = SUM(Attendance[Daily Hours])
+    VAR cohortHrsYTD = MAX(Attendance[tmp Hours YTD])
+
+RETURN
+
+DIVIDE(dailyHours, cohortHrsYTD,0)","CALC_COLUMN","Attendance","Daily Hours","
+    VAR LunchOffset = 1
+    VAR DailyHours = DATEDIFF(Attendance[Check-In],Attendance[CheckOut],HOUR)
+RETURN
+    DailyHours - LunchOffset",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Attendance","Daily Hours","
+    VAR LunchOffset = 1
+    VAR DailyHours = DATEDIFF(Attendance[Check-In],Attendance[CheckOut],HOUR)
+RETURN
+    DailyHours - LunchOffset","TABLE","Attendance","Attendance","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Attendance","Daily Hours","
+    VAR LunchOffset = 1
+    VAR DailyHours = DATEDIFF(Attendance[Check-In],Attendance[CheckOut],HOUR)
+RETURN
+    DailyHours - LunchOffset","COLUMN","Attendance","Check-In","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Attendance","Daily Hours","
+    VAR LunchOffset = 1
+    VAR DailyHours = DATEDIFF(Attendance[Check-In],Attendance[CheckOut],HOUR)
+RETURN
+    DailyHours - LunchOffset","COLUMN","Attendance","CheckOut","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Student Summary","Percent Hours Attended YTD","
+
+    VAR possibleHours = RELATED(Cohorts[Cohort Hours YTD])
+
+    VAR attendedHours = 'Student Summary'[Total Hours Attended]
+
+RETURN
+
+DIVIDE(attendedHours, possibleHours, 0)","CALC_COLUMN","Cohorts","Cohort Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Student Summary","Percent Hours Attended YTD","
+
+    VAR possibleHours = RELATED(Cohorts[Cohort Hours YTD])
+
+    VAR attendedHours = 'Student Summary'[Total Hours Attended]
+
+RETURN
+
+DIVIDE(attendedHours, possibleHours, 0)","CALC_COLUMN","Student Summary","Total Hours Attended","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Student Summary","Percent Hours Attended YTD","
+
+    VAR possibleHours = RELATED(Cohorts[Cohort Hours YTD])
+
+    VAR attendedHours = 'Student Summary'[Total Hours Attended]
+
+RETURN
+
+DIVIDE(attendedHours, possibleHours, 0)","ACTIVE_RELATIONSHIP","Student Summary","ee7b6cd1-7984-4956-98a8-739c393f78bf","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Student Summary","Percent Hours Attended YTD","
+
+    VAR possibleHours = RELATED(Cohorts[Cohort Hours YTD])
+
+    VAR attendedHours = 'Student Summary'[Total Hours Attended]
+
+RETURN
+
+DIVIDE(attendedHours, possibleHours, 0)","CALC_TABLE","Student Summary","Student Summary","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Student Summary","Cohort Hrs YTD","
+
+    VAR possibleHours = RELATED(Cohorts[Cohort Hours YTD])
+
+RETURN
+
+possibleHours","ACTIVE_RELATIONSHIP","Student Summary","ee7b6cd1-7984-4956-98a8-739c393f78bf","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Student Summary","Cohort Hrs YTD","
+
+    VAR possibleHours = RELATED(Cohorts[Cohort Hours YTD])
+
+RETURN
+
+possibleHours","CALC_COLUMN","Cohorts","Cohort Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Student Summary","Cohort Hrs YTD","
+
+    VAR possibleHours = RELATED(Cohorts[Cohort Hours YTD])
+
+RETURN
+
+possibleHours","CALC_TABLE","Student Summary","Student Summary","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Days","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], Cohorts[EndDate]),
+            Dates[IsWeekDay] = TRUE()
+        )
+    VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount - HolidayOffset","TABLE","Cohorts","Cohorts","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Days","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], Cohorts[EndDate]),
+            Dates[IsWeekDay] = TRUE()
+        )
+    VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount - HolidayOffset","ACTIVE_RELATIONSHIP","Attendance","75dd2ccd-04ef-474c-b1a2-6a70c85f2a11","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Days","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], Cohorts[EndDate]),
+            Dates[IsWeekDay] = TRUE()
+        )
+    VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount - HolidayOffset","COLUMN","Cohorts","HolidayDays","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Days","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], Cohorts[EndDate]),
+            Dates[IsWeekDay] = TRUE()
+        )
+    VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount - HolidayOffset","CALC_COLUMN","Dates","IsWeekDay","NOT WEEKDAY(Dates[Date]) IN {1,7}",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Days","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], Cohorts[EndDate]),
+            Dates[IsWeekDay] = TRUE()
+        )
+    VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount - HolidayOffset","RELATIONSHIP","Attendance","8a356b79-fb2a-4773-9f41-6b6e4351e17b","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Days","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], Cohorts[EndDate]),
+            Dates[IsWeekDay] = TRUE()
+        )
+    VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount - HolidayOffset","CALC_COLUMN","Dates","Date","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Days","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], Cohorts[EndDate]),
+            Dates[IsWeekDay] = TRUE()
+        )
+    VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount - HolidayOffset","CALC_TABLE","Dates","Dates","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Days","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], Cohorts[EndDate]),
+            Dates[IsWeekDay] = TRUE()
+        )
+    VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount - HolidayOffset","COLUMN","Cohorts","StartDate","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Days","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], Cohorts[EndDate]),
+            Dates[IsWeekDay] = TRUE()
+        )
+    VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount - HolidayOffset","COLUMN","Cohorts","EndDate","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Days YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount","CALC_COLUMN","Dates","IsWeekDay","NOT WEEKDAY(Dates[Date]) IN {1,7}",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Days YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount","ACTIVE_RELATIONSHIP","Attendance","75dd2ccd-04ef-474c-b1a2-6a70c85f2a11","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Days YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount","RELATIONSHIP","Attendance","8a356b79-fb2a-4773-9f41-6b6e4351e17b","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Days YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount","CALC_COLUMN","Dates","Date","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Days YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount","COLUMN","Cohorts","StartDate","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Days YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount","TABLE","Cohorts","Cohorts","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Days YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount","CALC_TABLE","Dates","Dates","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9","TABLE","Cohorts","Cohorts","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9","COLUMN","Cohorts","StartDate","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9","CALC_COLUMN","Dates","IsWeekDay","NOT WEEKDAY(Dates[Date]) IN {1,7}",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9","RELATIONSHIP","Attendance","8a356b79-fb2a-4773-9f41-6b6e4351e17b","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9","ACTIVE_RELATIONSHIP","Attendance","75dd2ccd-04ef-474c-b1a2-6a70c85f2a11","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9","CALC_COLUMN","Dates","Date","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Cohorts","Cohort Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], Cohorts[StartDate], TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9","CALC_TABLE","Dates","Dates","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Attendance","tmp Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], RELATED(Cohorts[StartDate]), TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9","CALC_COLUMN","Dates","IsWeekDay","NOT WEEKDAY(Dates[Date]) IN {1,7}",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Attendance","tmp Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], RELATED(Cohorts[StartDate]), TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9","RELATIONSHIP","Attendance","8a356b79-fb2a-4773-9f41-6b6e4351e17b","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Attendance","tmp Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], RELATED(Cohorts[StartDate]), TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9","ACTIVE_RELATIONSHIP","Attendance","75dd2ccd-04ef-474c-b1a2-6a70c85f2a11","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Attendance","tmp Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], RELATED(Cohorts[StartDate]), TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9","CALC_COLUMN","Dates","Date","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Attendance","tmp Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], RELATED(Cohorts[StartDate]), TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9","CALC_TABLE","Dates","Dates","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Attendance","tmp Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], RELATED(Cohorts[StartDate]), TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9","ACTIVE_RELATIONSHIP","Registration","d1761ee6-2717-4c04-928d-0f13faeee43c","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Attendance","tmp Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], RELATED(Cohorts[StartDate]), TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9","ACTIVE_RELATIONSHIP","Attendance","79fdbe84-0d5b-4f04-8836-0c9555f4d055","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Attendance","tmp Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], RELATED(Cohorts[StartDate]), TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9","COLUMN","Cohorts","StartDate","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Attendance","tmp Hours YTD","
+
+    VAR SchoolDayCount =
+        CALCULATE(
+            COUNTROWS(Dates),
+            DATESBETWEEN(Dates[Date], RELATED(Cohorts[StartDate]), TODAY()),
+            Dates[IsWeekDay] = TRUE()
+        )
+    //VAR HolidayOffset = Cohorts[HolidayDays]
+
+RETURN
+
+SchoolDayCount * 9","TABLE","Attendance","Attendance","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Dates","IsWeekDay","NOT WEEKDAY(Dates[Date]) IN {1,7}","CALC_COLUMN","Dates","Date","",""
+"f94fc950-a3d3-4120-92f9-e670f45109c8","CALC_COLUMN","Dates","IsWeekDay","NOT WEEKDAY(Dates[Date]) IN {1,7}","CALC_TABLE","Dates","Dates","",""
